@@ -17,7 +17,7 @@ you an idea what information is required by taggy:
     "user": "<user>", 
     "pw": "<pw>", 
     "file": "files/<file>", 
-    "tags": [ 'tag0', 'tag1' ]
+    "tags": [ "tag0","tag1" ]
 }
 ```
 
@@ -30,7 +30,7 @@ Nextcloud server.
 # Limitations
 
 Currently, the communication between taggy client and server is not encrypted 
-so that the credentials are transmitted as plain text which can be dangerous 
+so that the credentials are transmitted in plain text which can be dangerous 
 depending on your setup. It is recommended to enable HTTPS for your Nextcloud
 installation. SSL support for taggy will be added soon.
 
