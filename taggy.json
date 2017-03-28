@@ -1,0 +1,7 @@
+{
+	"taggy_host" : "localhost",
+	"taggy_port" : "5555",
+	"dbname" : "owncloud",
+	"dbuser" : "owncloud",
+	"dbpass" : "owncloud"
+}
