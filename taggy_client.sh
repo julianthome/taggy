@@ -9,8 +9,13 @@ PW="$2"
 FILE="$3"
 TAG="$4"
 
+[ -z "$USER" ] || [ -z "$PW" ] || [ -z "$FILE" ] || [ -z "$TAG" ] && {
+    echo "malformed arguments"
+    echo "$USAGE"
+    exit 1
+}
 
-[ "$#"-ne 4 ] && {
+[ $# -ne 4 ] && {
     echo "Wrong number of arguments"
     echo "$USAGE"
     exit 1
@@ -35,7 +40,7 @@ FILENAME="$(basename $FILE)"
 
 curl -u "$USER:$PW" -T "$FILE" "http://$HOST:4080/$DAV_PATH/$USER/$FILENAME"
 
-PAYLOAD="{\"user\":\"$USER\",\"pw\":\"$PW\",\"file\":\"$DAV_PATH/files/$FILENAME\",\"tags\":[\"$TAG\"]}" 
+PAYLOAD="{\"user\":\"$USER\",\"pw\":\"$PW\",\"file\":\"files/$FILENAME\",\"tags\":[\"$TAG\"]}" 
 
 curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" "http://$TAGGY_HOST:$TAGGY_PORT/tag"
 
