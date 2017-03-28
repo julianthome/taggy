@@ -49,15 +49,15 @@ def dbchange(storage, ftotag, tag):
 
     print("sid " + str(sid))
 
-    cursor.execute(
-        "select fileid from oc_filecache where storage = %s and path = %s", (str(sid), str(ftotag),))
+    cursor.execute("select fileid from oc_filecache where storage = %s \
+                   and path = %s", (str(sid), str(ftotag),))
 
     fid = cursor.fetchone()[0]
 
     print("sid " + str(sid) + " fid " + str(fid))
 
-    cursor.execute(
-        "select * from oc_systemtag_object_mapping where objectid = %s and systemtagid = %s", (str(fid), str(tid),))
+    cursor.execute("select * from oc_systemtag_object_mapping where objectid \
+                   = %s and systemtagid = %s", (str(fid), str(tid),))
 
     if cursor.rowcount > 0:
         print('systemtag already there')
@@ -65,8 +65,9 @@ def dbchange(storage, ftotag, tag):
         cursor.fetchall()
         print("no systemtag connection")
         try:
-            cursor.execute(
-                "insert into oc_systemtag_object_mapping(objectid,objecttype,systemtagid) values (%s,'files',%s)", (str(fid), str(tid),))
+            cursor.execute("insert into oc_systemtag_object_mapping(objectid,\
+                           objecttype,systemtagid) values (%s,'files',%s)",
+                           (str(fid), str(tid),))
         except mariadb.Error as error:
             print(str(error))
         finally:
@@ -76,18 +77,28 @@ def dbchange(storage, ftotag, tag):
     db.close()
 
 
+def authenticate(user, password):
+    r = requests.get('http://localhost:4080/nextcloud/remote.php/dav/files/',
+                     auth=(user, password))
+    if r.status_code == 200:
+        return True
+    return False
+
+
 @route('/tag', method='POST')
-def recipe_save():
+def tag():
     data = request.json
     print('data')
     print(data)
-    storage = "home::" + data['storage']
+    storage = "home::" + data['user']
     fil = data['file']
     tags = data['tags']
-
-    print("storage " + storage + " fil " + fil + " tag " + str(tags))
-    for tag in tags:
-        dbchange(storage, fil, tag)
+    user = data['user']
+    pw = data['pw']
+    if authenticate(user, pw):
+        print("storage " + storage + " fil " + fil + " tag " + str(tags))
+        for tag in tags:
+            dbchange(storage, fil, tag)
 
 
 def read_config(cfg):
@@ -99,12 +110,12 @@ def read_config(cfg):
         print('cannot read file %s' % cfg)
         sys.exit(-1)
     scfg = str(cfg.read())
-    data = json.loads(scfg)
-    dbuser = data["dbuser"]
-    dbpass = data["dbpass"]
-    dbname = data["dbname"]
-    taggy_host = data["taggy_host"]
-    taggy_port = data["taggy_port"]
+    config = json.loads(scfg)
+    dbuser = config["dbuser"]
+    dbpass = config["dbpass"]
+    dbname = config["dbname"]
+    taggy_host = config["taggy_host"]
+    taggy_port = config["taggy_port"]
 
 
 if len(sys.argv) < 2:
