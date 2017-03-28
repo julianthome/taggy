@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 from bottle import run, post, request, response, get, route
 
@@ -7,13 +7,14 @@ import mysql.connector as mariadb
 import sys
 import json
 from subprocess import call
+import requests
 
 dbuser = ""
 dbpass = ""
 dbname = ""
 taggy_host = ""
 taggy_port = ""
-
+dav_auth_path = ""
 
 def dbchange(storage, ftotag, tag):
 
@@ -78,7 +79,7 @@ def dbchange(storage, ftotag, tag):
 
 
 def authenticate(user, password):
-    r = requests.get('http://localhost:4080/nextcloud/remote.php/dav/files/',
+    r = requests.get(dav_auth_path,
                      auth=(user, password))
     if r.status_code == 200:
         return True
@@ -99,10 +100,12 @@ def tag():
         print("storage " + storage + " fil " + fil + " tag " + str(tags))
         for tag in tags:
             dbchange(storage, fil, tag)
+    else:
+        print("authentication error")
 
 
 def read_config(cfg):
-    global dbuser, dbpass, dbname, taggy_host, taggy_port
+    global dbuser, dbpass, dbname, taggy_host, taggy_port, dav_auth_path
     print('read file %s' % cfg)
     try:
         cfg = open(cfg, 'r')
@@ -116,15 +119,15 @@ def read_config(cfg):
     dbname = config["dbname"]
     taggy_host = config["taggy_host"]
     taggy_port = config["taggy_port"]
+    dav_auth_path = config["dav_auth_path"]
 
 
 if len(sys.argv) < 2:
     sys.exit('Usage: %s <cfg>' % sys.argv[0])
 
-
 read_config(sys.argv[1])
 print('start with dbuser: %s, dbname: %s, taggy_host: %s, taggy_port: %s' %
       (dbuser, dbname, taggy_host, taggy_port))
+
 run(host=taggy_host, port=taggy_port, debug=False)
 
-sys.exit(0)
