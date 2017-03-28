@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Taggy - a nextcloud tag server
+# taggy - a nextcloud tag server
 #
 # The MIT License (MIT)
 #

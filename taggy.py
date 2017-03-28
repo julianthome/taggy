@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Taggy - a nextcloud tag server
+# taggy - a nextcloud tag server
 #
 # The MIT License (MIT)
 #
