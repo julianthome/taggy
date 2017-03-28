@@ -14,20 +14,21 @@ dbname = ""
 taggy_host = ""
 taggy_port = ""
 
-def dbchange(storage,ftotag,tag):
+
+def dbchange(storage, ftotag, tag):
 
     db = mariadb.connect(user=dbuser, password=dbpass, database=dbname)
     cursor = db.cursor()
 
-    cursor.execute("SELECT name,id FROM oc_systemtag");
+    cursor.execute("SELECT name,id FROM oc_systemtag")
 
     tagdict = {}
     tagset = set()
 
     for name, id in cursor:
-        tagdict[str(name,'utf-8')] = str(id)
-        tagset.add(str(name,'utf-8'))
-        print("name:" + str(name,'utf-8') + ", id:" + str(id))
+        tagdict[str(name, 'utf-8')] = str(id)
+        tagset.add(str(name, 'utf-8'))
+        print("name:" + str(name, 'utf-8') + ", id:" + str(id))
         print(tagdict)
 
     tid = -1
@@ -41,34 +42,39 @@ def dbchange(storage,ftotag,tag):
         tid = cursor.fetchone()[0]
 
     print("storage " + storage)
-    cursor.execute("select numeric_id from oc_storages where id = %s", (storage,))
- 
+    cursor.execute(
+        "select numeric_id from oc_storages where id = %s", (storage,))
+
     sid = cursor.fetchone()[0]
 
     print("sid " + str(sid))
 
-    cursor.execute("select fileid from oc_filecache where storage = %s and path = %s", (str(sid), str(ftotag),))
+    cursor.execute(
+        "select fileid from oc_filecache where storage = %s and path = %s", (str(sid), str(ftotag),))
 
     fid = cursor.fetchone()[0]
 
     print("sid " + str(sid) + " fid " + str(fid))
 
-    cursor.execute("select * from oc_systemtag_object_mapping where objectid = %s and systemtagid = %s", (str(fid), str(tid),))
+    cursor.execute(
+        "select * from oc_systemtag_object_mapping where objectid = %s and systemtagid = %s", (str(fid), str(tid),))
 
     if cursor.rowcount > 0:
         print('systemtag already there')
     else:
         cursor.fetchall()
         print("no systemtag connection")
-        try: 
-           cursor.execute("insert into oc_systemtag_object_mapping(objectid,objecttype,systemtagid) values (%s,'files',%s)", (str(fid), str(tid),))
+        try:
+            cursor.execute(
+                "insert into oc_systemtag_object_mapping(objectid,objecttype,systemtagid) values (%s,'files',%s)", (str(fid), str(tid),))
         except mariadb.Error as error:
-           print(str(error))
+            print(str(error))
         finally:
-           db.commit()
-   
-    cursor.close() 
+            db.commit()
+
+    cursor.close()
     db.close()
+
 
 @route('/tag', method='POST')
 def recipe_save():
@@ -79,9 +85,10 @@ def recipe_save():
     fil = data['file']
     tags = data['tags']
 
-    print("storage " + storage + " fil "+ fil + " tag " + str(tags));
+    print("storage " + storage + " fil " + fil + " tag " + str(tags))
     for tag in tags:
-        dbchange(storage,fil,tag)
+        dbchange(storage, fil, tag)
+
 
 def read_config(cfg):
     global dbuser, dbpass, dbname, taggy_host, taggy_port
@@ -99,12 +106,14 @@ def read_config(cfg):
     taggy_host = data["taggy_host"]
     taggy_port = data["taggy_port"]
 
+
 if len(sys.argv) < 2:
-     sys.exit('Usage: %s <cfg>' % sys.argv[0])
+    sys.exit('Usage: %s <cfg>' % sys.argv[0])
 
 
 read_config(sys.argv[1])
-print('start with dbuser: %s, dbname: %s, taggy_host: %s, taggy_port: %s' % (dbuser, dbname, taggy_host, taggy_port))
+print('start with dbuser: %s, dbname: %s, taggy_host: %s, taggy_port: %s' %
+      (dbuser, dbname, taggy_host, taggy_port))
 run(host=taggy_host, port=taggy_port, debug=False)
 
 sys.exit(0)
