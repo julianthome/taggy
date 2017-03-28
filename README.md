@@ -17,7 +17,7 @@ you an idea what information is required by taggy:
     "user": "<user>", 
     "pw": "<pw>", 
     "file": "files/<file>", 
-    "tags": [ <tag0>,...,<tagN> ]
+    "tags": [ 'tag0', 'tag1' ]
 }
 ```
 
