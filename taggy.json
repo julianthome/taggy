@@ -2,7 +2,9 @@
 	"taggy_host" : "0.0.0.0",
 	"taggy_port" : "5555",
 	"dav_auth_path" : "http://localhost/nextcloud/remote.php/dav/files/",
-	"dbname" : "owncloud",
-	"dbuser" : "owncloud",
-	"dbpass" : "owncloud"
+	"dbname" : "nextcloud",
+	"dbuser" : "nextcloud",
+	"dbpass" : "nextcloud",
+	"dbhost" : "localhost",
+	"dbport" : "3306"
 }

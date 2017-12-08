@@ -42,7 +42,7 @@ dav_auth_path = ""
 
 def dbchange(storage, ftotag, tag):
 
-    db = mariadb.connect(user=dbuser, password=dbpass, database=dbname)
+    db = mariadb.connect(user=dbuser, password=dbpass, database=dbname, host=dbhost, port=dbport)
     cursor = db.cursor()
 
     cursor.execute("SELECT name,id FROM oc_systemtag")
@@ -129,7 +129,7 @@ def tag():
 
 
 def read_config(cfg):
-    global dbuser, dbpass, dbname, taggy_host, taggy_port, dav_auth_path
+    global dbuser, dbpass, dbname, dbhost, dbport, taggy_host, taggy_port, dav_auth_path
     print('read file %s' % cfg)
     try:
         cfg = open(cfg, 'r')
@@ -141,6 +141,8 @@ def read_config(cfg):
     dbuser = config["dbuser"]
     dbpass = config["dbpass"]
     dbname = config["dbname"]
+    dbhost = config["dbhost"]
+    dbport = config["dbport"]
     taggy_host = config["taggy_host"]
     taggy_port = config["taggy_port"]
     dav_auth_path = config["dav_auth_path"]
@@ -150,8 +152,8 @@ if len(sys.argv) < 2:
     sys.exit('Usage: %s <cfg>' % sys.argv[0])
 
 read_config(sys.argv[1])
-print('start with dbuser: %s, dbname: %s, taggy_host: %s, taggy_port: %s' %
-      (dbuser, dbname, taggy_host, taggy_port))
+print('start with dbuser: %s, dbname: %s, dbhost: %s, dbport: %s, taggy_host: %s, taggy_port: %s' %
+      (dbuser, dbname, dbhost, dbport, taggy_host, taggy_port))
 
 run(host=taggy_host, port=taggy_port, debug=False)
 

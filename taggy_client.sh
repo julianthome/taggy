@@ -62,7 +62,7 @@ TAG="$4"
 
 FILENAME="$(basename $FILE)"
 
-curl -u "$USER:$PW" -T "$FILE" "http://$HOST:4080/$DAV_PATH/$USER/$FILENAME"
+curl -u "$USER:$PW" -T "$FILE" "http://$HOST:$PORT/$DAV_PATH/$USER/$FILENAME"
 
 PAYLOAD="{\"user\":\"$USER\",\"pw\":\"$PW\",\"file\":\"files/$FILENAME\",\"tags\":[\"$TAG\"]}" 
 
