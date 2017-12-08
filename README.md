@@ -27,6 +27,11 @@ configuration for the taggy client whereas the file `taggy.json` contains the
 configuration for the taggy service which is supposed to run on the
 Nextcloud server.
 
+# Installation
+
+taggy requires Python Version 3 with the python modules `requests`, `mysql`
+and `bottle`.
+
 # Limitations
 
 Currently, the communication between taggy client and server is not encrypted 
